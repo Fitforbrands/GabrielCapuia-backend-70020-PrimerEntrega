@@ -1,15 +1,21 @@
 import cartManager from "../managers/cartManager.js";
+import cartDao from "../dao/cart.dao.js";
 
 export const checkCartData = async (req, res, next) => {
   try {
     const { cid } = req.params;
-    const carts = await cartManager.getCarts();
-
-    const cart = carts.find((c) => c.id === cid);
+    // const carts = await cartManager.getCarts(); // version anterior
+    const cart = await cartDao.getById(cid);
     if (!cart)
       return res
         .status(404)
         .json({ status: "error", msg: "Carrito no encontrado" });
+
+    // const cart = carts.find((c) => c.id === cid);
+    // if (!cart)
+    //   return res
+    //     .status(404)
+    //     .json({ status: "error", msg: "Carrito no encontrado" });
 
     next();
 

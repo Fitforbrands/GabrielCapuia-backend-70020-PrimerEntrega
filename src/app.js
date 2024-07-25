@@ -1,12 +1,15 @@
 import express from "express";
-import productRouter from "./router/product.router.js";
-import cartRouter from "./router/cart.router.js";
+import router from "./router/index.router.js";
 import viewsRouter from "./router/views.router.js";
 import handlebars from "express-handlebars";
 import __dirname from "./dirname.js";
 import { Server } from "socket.io";
+import { connectMongoDB } from "./config/mongoDB.config.js";
+import envs from "./config/envsconfig.js";
 
 const app = express();
+
+connectMongoDB();
 
 // set up Handlebars
 app.engine("handlebars", handlebars.engine());
@@ -27,17 +30,15 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", productRouter);
-app.use("/api", cartRouter);
+app.use("/api", router);
+// app.use("/api", cartRouter);
 app.use("/", viewsRouter);
 app.use(express.static("public")); //SI QUIERO VER DESDE PUBLIC CON STATIC va arriba
 
-const PORT = 8080;
-
 // PORT listen
 
-const httpServer = app.listen(PORT, () => {
-  console.log("puerto conectado: 8080");
+const httpServer = app.listen(envs.PORT, () => {
+  console.log(`puerto conectado: ${envs.PORT}`);
 });
 
 export const io = new Server(httpServer);
