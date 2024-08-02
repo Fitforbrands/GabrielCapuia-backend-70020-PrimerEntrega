@@ -34,12 +34,15 @@ const addProductToCart = async (cid, pid) => {
   return cart;
 };
 
+// DELETE ONE PRODUCT IN CART
+
 const deleteProductInCart = async (cid, pid) => {
   const cart = await cartModel.findById(cid);
 
   const productsFilter = cart.products.filter(
-    (prod) => prod.product.toString() !== pid
+    (prod) => prod.product._id.toString() !== pid
   );
+
   const cartResponse = await cartModel.findByIdAndUpdate(
     cid,
     {
@@ -49,12 +52,6 @@ const deleteProductInCart = async (cid, pid) => {
   );
 
   return cartResponse;
-
-  // const cart = await cartModel.findByIdAndUpdate(
-  //   { _id: cid, "products.product": pid },
-  //   { $inc: { "products.$.quantity": -1 } },
-  //   { new: true }
-  // );
 };
 
 const updateQuantityProductInCart = async (cid, pid, quantity) => {
